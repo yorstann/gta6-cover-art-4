@@ -1,12 +1,233 @@
-html, body { margin: 0; height: 100%; background: #f2f0f4; color: #1d1b22; font: 15px/1.4 system-ui, sans-serif; }
-.app { display: flex; gap: 32px; align-items: center; justify-content: center; height: 100%; padding: 24px; box-sizing: border-box; }
-.controls { display: flex; flex-direction: column; gap: 14px; width: 280px; }
-.controls h1 { margin: 0; font-size: 28px; }
-.controls p { margin: 0; color: #5c5866; }
-label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
-input[type=text] { font: inherit; padding: 8px; border: 1px solid #c9c4d1; border-radius: 6px; }
-button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 6px; background: #1d1b22; color: #fff; cursor: pointer; }
-canvas { width: min(70vh, 60vw); height: min(70vh, 60vw); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
-body.shot-cover .controls { display: none; }
-body.shot-cover .app { padding: 0; }
-body.shot-cover canvas { width: 100vw; height: 100vh; box-shadow: none; }
+/* Vice Frame 4 editor: a dark plum sidebar beside a centred stage. In
+   shot-cover mode the chrome disappears and the canvas fills the window so
+   a screenshot is exactly the exported cover. */
+
+@font-face {
+  font-family: 'Anton';
+  src: url('./fonts/Anton-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #12081f;
+  color: #f3ecff;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.controls {
+  width: 320px;
+  flex: 0 0 320px;
+  padding: 18px 18px 26px;
+  background: linear-gradient(180deg, #1d1030, #150a26);
+  border-right: 1px solid rgba(255, 209, 102, 0.22);
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.controls h1 {
+  font-family: Anton, 'Arial Black', sans-serif;
+  font-size: 34px;
+  letter-spacing: 1px;
+  margin: 2px 0 4px;
+  text-transform: uppercase;
+}
+
+.controls h1 span {
+  color: #ff2e63;
+}
+
+.tagline {
+  color: #c9b8e8;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0 0 14px;
+}
+
+.group {
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 12px 0 6px;
+}
+
+.group h2 {
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #ffd166;
+  margin: 0 0 10px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: #d9cdf2;
+  margin: 0 0 9px;
+}
+
+label.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+select,
+input[type='text'] {
+  width: 100%;
+  margin-top: 4px;
+  padding: 7px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #241536;
+  color: #fff;
+  font-size: 14px;
+}
+
+input[type='range'] {
+  width: 100%;
+  margin-top: 4px;
+  accent-color: #ff2e63;
+}
+
+input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: #ff2e63;
+}
+
+.panel-row {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 9px 10px 4px;
+  margin: 0 0 10px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+}
+
+.panel-row.selected {
+  border-color: #ffd166;
+  box-shadow: 0 0 0 1px #ffd166;
+}
+
+.panel-row h3 {
+  margin: 0 0 7px;
+  font-size: 12.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.hint {
+  color: #9d8bc4;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.upload {
+  border: 1px dashed rgba(255, 209, 102, 0.55);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: #ffd166;
+}
+
+.upload input {
+  display: none;
+}
+
+.actions button {
+  width: 100%;
+  padding: 10px;
+  margin: 0 0 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #2c1a47;
+  color: #fff;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+
+.actions button:hover:not(:disabled) {
+  background: #3a2260;
+}
+
+.actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.actions button.primary {
+  background: linear-gradient(180deg, #ff5e62, #e82e5f);
+  border-color: #ff8fa3;
+  font-family: Anton, 'Arial Black', sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.actions .row {
+  display: flex;
+  gap: 8px;
+}
+
+#status {
+  min-height: 18px;
+  color: #7bf1ff;
+  font-size: 13px;
+}
+
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 22px;
+  background:
+    radial-gradient(1100px 500px at 75% 0%, rgba(255, 46, 99, 0.13), transparent 60%),
+    radial-gradient(900px 600px at 15% 100%, rgba(34, 211, 238, 0.1), transparent 60%),
+    #12081f;
+}
+
+.stage canvas {
+  max-width: min(100%, calc((100vh - 90px) * 1.6));
+  max-height: calc(100vh - 90px);
+  width: auto;
+  height: auto;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.stage .hint {
+  margin: 0;
+}
+
+/* Screenshot modes (shots.json): cover fills the window, editor keeps chrome. */
+body.shot-cover .controls,
+body.shot-cover .stage .hint {
+  display: none;
+}
+
+body.shot-cover .stage {
+  padding: 0;
+}
+
+body.shot-cover .stage canvas {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}

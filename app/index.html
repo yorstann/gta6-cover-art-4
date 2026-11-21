@@ -3,20 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
+<title>Vice Frame 4 — GTA-style cover maker</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
+  <aside class="controls">
+    <h1>Vice Frame <span>4</span></h1>
+    <p class="tagline">An offline GTA-style cover-art maker. Illustrated scenes or your own photos, six layouts, per-panel colour grades, poster lettering — exported as PNG.</p>
+
+    <section class="group">
+      <h2>Layout</h2>
+      <label>Template <select id="template"></select></label>
+      <label>Export size <select id="size"></select></label>
+    </section>
+
+    <section class="group">
+      <h2>Words</h2>
+      <label>Caption <input id="caption" type="text" maxlength="42"></label>
+      <label>Subtitle <input id="subtitle" type="text" maxlength="60"></label>
+      <label>Lettering <select id="lettering"></select></label>
+      <div id="headline-fields">
+        <label>Headline 1 <input class="headline" data-i="0" type="text" maxlength="48"></label>
+        <label>Headline 2 <input class="headline" data-i="1" type="text" maxlength="48"></label>
+        <label>Headline 3 <input class="headline" data-i="2" type="text" maxlength="48"></label>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Colour</h2>
+      <label>Cover grade <select id="grade"></select></label>
+    </section>
+
+    <section class="group">
+      <h2>Panels</h2>
+      <div id="panels"></div>
+      <label class="upload">Add your photos
+        <input id="upload" type="file" accept="image/*" multiple>
+      </label>
+      <p class="hint">…or drop photos onto the cover. Up to four panels per cover.</p>
+    </section>
+
+    <section class="group">
+      <h2>Badge &amp; banner</h2>
+      <label class="check"><input id="badge-on" type="checkbox"> Starburst badge</label>
+      <label>Badge line 1 <input id="badge-line-1" type="text" maxlength="14"></label>
+      <label>Badge line 2 <input id="badge-line-2" type="text" maxlength="14"></label>
+      <label>Badge tilt <input id="badge-rotation" type="range" min="-40" max="40" step="1"></label>
+      <label class="check"><input id="banner-on" type="checkbox"> Bottom banner</label>
+      <label>Banner text <input id="banner-text" type="text" maxlength="64"></label>
+    </section>
+
+    <section class="group">
+      <h2>Finish</h2>
+      <label>Sunburst <input id="fin-sunburst" type="range" min="0" max="1" step="0.05"></label>
+      <label>Halftone <input id="fin-halftone" type="range" min="0" max="1" step="0.05"></label>
+      <label>Grain <input id="fin-grain" type="range" min="0" max="1" step="0.05"></label>
+      <label>Vignette <input id="fin-vignette" type="range" min="0" max="1" step="0.05"></label>
+    </section>
+
+    <section class="group actions">
+      <button id="surprise" type="button">🎲 Surprise me</button>
+      <div class="row">
+        <button id="undo" type="button">↩ Undo</button>
+        <button id="redo" type="button">↪ Redo</button>
+      </div>
+      <button id="export" type="button" class="primary">Export PNG</button>
+      <p id="status" role="status"></p>
+    </section>
+  </aside>
+  <section class="stage" id="stage">
+    <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+    <p class="hint" id="stage-hint">Click a panel to select it · drag to reframe · scroll over it to zoom</p>
   </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
 </main>
 <script type="module" src="./src/main.js"></script>
 </body>
